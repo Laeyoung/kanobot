@@ -1,9 +1,9 @@
 <div align="center">
-  <img src="nanobot_logo.png" alt="nanobot" width="500">
-  <h1>nanobot: Ultra-Lightweight Personal AI Assistant</h1>
+  <img src="kanobot_logo.png" alt="kanobot" width="500">
+  <h1>kanobot: Ultra-Lightweight Personal AI Assistant</h1>
   <p>
-    <a href="https://pypi.org/project/nanobot-ai/"><img src="https://img.shields.io/pypi/v/nanobot-ai" alt="PyPI"></a>
-    <a href="https://pepy.tech/project/nanobot-ai"><img src="https://static.pepy.tech/badge/nanobot-ai" alt="Downloads"></a>
+    <a href="https://pypi.org/project/kanobot-ai/"><img src="https://img.shields.io/pypi/v/kanobot-ai" alt="PyPI"></a>
+    <a href="https://pepy.tech/project/kanobot-ai"><img src="https://static.pepy.tech/badge/kanobot-ai" alt="Downloads"></a>
     <img src="https://img.shields.io/badge/python-≥3.11-blue" alt="Python">
     <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
     <a href="./COMMUNICATION.md"><img src="https://img.shields.io/badge/Feishu-Group-E9DBFC?style=flat&logo=feishu&logoColor=white" alt="Feishu"></a>
@@ -12,15 +12,15 @@
   </p>
 </div>
 
-🐈 **nanobot** is an **ultra-lightweight** personal AI assistant inspired by [Clawdbot](https://github.com/openclaw/openclaw) 
+🐈 **kanobot** is an **ultra-lightweight** personal AI assistant inspired by [Clawdbot](https://github.com/openclaw/openclaw) 
 
 ⚡️ Delivers core agent functionality in just **~4,000** lines of code — **99% smaller** than Clawdbot's 430k+ lines.
 
 ## 📢 News
 
-- **2026-02-01** 🎉 nanobot launched! Welcome to try 🐈 nanobot!
+- **2026-02-01** 🎉 kanobot launched! Welcome to try 🐈 kanobot!
 
-## Key Features of nanobot:
+## Key Features of kanobot:
 
 🪶 **Ultra-Lightweight**: Just ~4,000 lines of code — 99% smaller than Clawdbot - core functionality.
 
@@ -33,7 +33,7 @@
 ## 🏗️ Architecture
 
 <p align="center">
-  <img src="nanobot_arch.png" alt="nanobot architecture" width="800">
+  <img src="kanobot_arch.png" alt="kanobot architecture" width="800">
 </p>
 
 ## ✨ Features
@@ -64,37 +64,37 @@
 **Install from source** (latest features, recommended for development)
 
 ```bash
-git clone https://github.com/HKUDS/nanobot.git
-cd nanobot
+git clone https://github.com/HKUDS/kanobot.git
+cd kanobot
 pip install -e .
 ```
 
 **Install with [uv](https://github.com/astral-sh/uv)** (stable, fast)
 
 ```bash
-uv tool install nanobot-ai
+uv tool install kanobot-ai
 ```
 
 **Install from PyPI** (stable)
 
 ```bash
-pip install nanobot-ai
+pip install kanobot-ai
 ```
 
 ## 🚀 Quick Start
 
 > [!TIP]
-> Set your API key in `~/.nanobot/config.json`.
+> Set your API key in `~/.kanobot/config.json`.
 > Get API keys: [OpenRouter](https://openrouter.ai/keys) (LLM) · [Brave Search](https://brave.com/search/api/) (optional, for web search)
 > You can also change the model to `minimax/minimax-m2` for lower cost.
 
 **1. Initialize**
 
 ```bash
-nanobot onboard
+kanobot onboard
 ```
 
-**2. Configure** (`~/.nanobot/config.json`)
+**2. Configure** (`~/.kanobot/config.json`)
 
 ```json
 {
@@ -122,14 +122,14 @@ nanobot onboard
 **3. Chat**
 
 ```bash
-nanobot agent -m "What is 2+2?"
+kanobot agent -m "What is 2+2?"
 ```
 
 That's it! You have a working AI assistant in 2 minutes.
 
 ## 🖥️ Local Models (vLLM)
 
-Run nanobot with your own local models using vLLM or any OpenAI-compatible server.
+Run kanobot with your own local models using vLLM or any OpenAI-compatible server.
 
 **1. Start your vLLM server**
 
@@ -137,7 +137,7 @@ Run nanobot with your own local models using vLLM or any OpenAI-compatible serve
 vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000
 ```
 
-**2. Configure** (`~/.nanobot/config.json`)
+**2. Configure** (`~/.kanobot/config.json`)
 
 ```json
 {
@@ -158,7 +158,7 @@ vllm serve meta-llama/Llama-3.1-8B-Instruct --port 8000
 **3. Chat**
 
 ```bash
-nanobot agent -m "Hello from my local LLM!"
+kanobot agent -m "Hello from my local LLM!"
 ```
 
 > [!TIP]
@@ -166,7 +166,7 @@ nanobot agent -m "Hello from my local LLM!"
 
 ## 💬 Chat Apps
 
-Talk to your nanobot through Telegram or WhatsApp — anytime, anywhere.
+Talk to your kanobot through Telegram or WhatsApp — anytime, anywhere.
 
 | Channel | Setup |
 |---------|-------|
@@ -200,7 +200,7 @@ Talk to your nanobot through Telegram or WhatsApp — anytime, anywhere.
 **3. Run**
 
 ```bash
-nanobot gateway
+kanobot gateway
 ```
 
 </details>
@@ -213,7 +213,7 @@ Requires **Node.js ≥18**.
 **1. Link device**
 
 ```bash
-nanobot channels login
+kanobot channels login
 # Scan QR with WhatsApp → Settings → Linked Devices
 ```
 
@@ -234,17 +234,17 @@ nanobot channels login
 
 ```bash
 # Terminal 1
-nanobot channels login
+kanobot channels login
 
 # Terminal 2
-nanobot gateway
+kanobot gateway
 ```
 
 </details>
 
 ## ⚙️ Configuration
 
-Config file: `~/.nanobot/config.json`
+Config file: `~/.kanobot/config.json`
 
 ### Providers
 
@@ -304,27 +304,27 @@ Config file: `~/.nanobot/config.json`
 
 | Command | Description |
 |---------|-------------|
-| `nanobot onboard` | Initialize config & workspace |
-| `nanobot agent -m "..."` | Chat with the agent |
-| `nanobot agent` | Interactive chat mode |
-| `nanobot gateway` | Start the gateway |
-| `nanobot status` | Show status |
-| `nanobot channels login` | Link WhatsApp (scan QR) |
-| `nanobot channels status` | Show channel status |
+| `kanobot onboard` | Initialize config & workspace |
+| `kanobot agent -m "..."` | Chat with the agent |
+| `kanobot agent` | Interactive chat mode |
+| `kanobot gateway` | Start the gateway |
+| `kanobot status` | Show status |
+| `kanobot channels login` | Link WhatsApp (scan QR) |
+| `kanobot channels status` | Show channel status |
 
 <details>
 <summary><b>Scheduled Tasks (Cron)</b></summary>
 
 ```bash
 # Add a job
-nanobot cron add --name "daily" --message "Good morning!" --cron "0 9 * * *"
-nanobot cron add --name "hourly" --message "Check status" --every 3600
+kanobot cron add --name "daily" --message "Good morning!" --cron "0 9 * * *"
+kanobot cron add --name "hourly" --message "Check status" --every 3600
 
 # List jobs
-nanobot cron list
+kanobot cron list
 
 # Remove a job
-nanobot cron remove <job_id>
+kanobot cron remove <job_id>
 ```
 
 </details>
@@ -332,32 +332,32 @@ nanobot cron remove <job_id>
 ## 🐳 Docker
 
 > [!TIP]
-> The `-v ~/.nanobot:/root/.nanobot` flag mounts your local config directory into the container, so your config and workspace persist across container restarts.
+> The `-v ~/.kanobot:/root/.kanobot` flag mounts your local config directory into the container, so your config and workspace persist across container restarts.
 
-Build and run nanobot in a container:
+Build and run kanobot in a container:
 
 ```bash
 # Build the image
-docker build -t nanobot .
+docker build -t kanobot .
 
 # Initialize config (first time only)
-docker run -v ~/.nanobot:/root/.nanobot --rm nanobot onboard
+docker run -v ~/.kanobot:/root/.kanobot --rm kanobot onboard
 
 # Edit config on host to add API keys
-vim ~/.nanobot/config.json
+vim ~/.kanobot/config.json
 
 # Run gateway (connects to Telegram/WhatsApp)
-docker run -v ~/.nanobot:/root/.nanobot -p 18790:18790 nanobot gateway
+docker run -v ~/.kanobot:/root/.kanobot -p 18790:18790 kanobot gateway
 
 # Or run a single command
-docker run -v ~/.nanobot:/root/.nanobot --rm nanobot agent -m "Hello!"
-docker run -v ~/.nanobot:/root/.nanobot --rm nanobot status
+docker run -v ~/.kanobot:/root/.kanobot --rm kanobot agent -m "Hello!"
+docker run -v ~/.kanobot:/root/.kanobot --rm kanobot status
 ```
 
 ## 📁 Project Structure
 
 ```
-nanobot/
+kanobot/
 ├── agent/          # 🧠 Core agent logic
 │   ├── loop.py     #    Agent loop (LLM ↔ tool execution)
 │   ├── context.py  #    Prompt builder
@@ -380,7 +380,7 @@ nanobot/
 
 PRs welcome! The codebase is intentionally small and readable. 🤗
 
-**Roadmap** — Pick an item and [open a PR](https://github.com/HKUDS/nanobot/pulls)!
+**Roadmap** — Pick an item and [open a PR](https://github.com/HKUDS/kanobot/pulls)!
 
 - [x] **Voice Transcription** — Support for Groq Whisper (Issue #13)
 - [ ] **Multi-modal** — See and hear (images, voice, video)
@@ -391,29 +391,29 @@ PRs welcome! The codebase is intentionally small and readable. 🤗
 
 ### Contributors
 
-<a href="https://github.com/HKUDS/nanobot/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=HKUDS/nanobot" />
+<a href="https://github.com/HKUDS/kanobot/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=HKUDS/kanobot" />
 </a>
 
 
 ## ⭐ Star History
 
 <div align="center">
-  <a href="https://star-history.com/#HKUDS/nanobot&Date">
+  <a href="https://star-history.com/#HKUDS/kanobot&Date">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=HKUDS/nanobot&type=Date&theme=dark" />
-      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=HKUDS/nanobot&type=Date" />
-      <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=HKUDS/nanobot&type=Date" style="border-radius: 15px; box-shadow: 0 0 30px rgba(0, 217, 255, 0.3);" />
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=HKUDS/kanobot&type=Date&theme=dark" />
+      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=HKUDS/kanobot&type=Date" />
+      <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=HKUDS/kanobot&type=Date" style="border-radius: 15px; box-shadow: 0 0 30px rgba(0, 217, 255, 0.3);" />
     </picture>
   </a>
 </div>
 
 <p align="center">
-  <em> Thanks for visiting ✨ nanobot!</em><br><br>
-  <img src="https://visitor-badge.laobi.icu/badge?page_id=HKUDS.nanobot&style=for-the-badge&color=00d4ff" alt="Views">
+  <em> Thanks for visiting ✨ kanobot!</em><br><br>
+  <img src="https://visitor-badge.laobi.icu/badge?page_id=HKUDS.kanobot&style=for-the-badge&color=00d4ff" alt="Views">
 </p>
 
 
 <p align="center">
-  <sub>nanobot is for educational, research, and technical exchange purposes only</sub>
+  <sub>kanobot is for educational, research, and technical exchange purposes only</sub>
 </p>

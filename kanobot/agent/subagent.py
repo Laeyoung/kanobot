@@ -14,7 +14,7 @@ from kanobot.providers.base import LLMProvider
 from kanobot.agent.tools.registry import ToolRegistry
 from kanobot.agent.tools.filesystem import ReadFileTool, WriteFileTool, ListDirTool
 from kanobot.agent.tools.shell import ExecTool
-from kanobot.agent.tools.web import WebSearchTool, WebFetchTool
+from kanobot.agent.tools.web import WebSearchTool, NaverSearchTool, WebFetchTool
 
 
 class SubagentManager:
@@ -34,14 +34,16 @@ class SubagentManager:
         model: str | None = None,
         brave_api_key: str | None = None,
         exec_config: "ExecToolConfig | None" = None,
+        naver_config: "NaverSearchConfig | None" = None,
     ):
-        from kanobot.config.schema import ExecToolConfig
+        from kanobot.config.schema import ExecToolConfig, NaverSearchConfig
         self.provider = provider
         self.workspace = workspace
         self.bus = bus
         self.model = model or provider.get_default_model()
         self.brave_api_key = brave_api_key
         self.exec_config = exec_config or ExecToolConfig()
+        self.naver_config = naver_config or NaverSearchConfig()
         self._running_tasks: dict[str, asyncio.Task[None]] = {}
     
     async def spawn(
@@ -106,6 +108,12 @@ class SubagentManager:
             ))
             tools.register(WebSearchTool(api_key=self.brave_api_key))
             tools.register(WebFetchTool())
+            if self.naver_config.client_id and self.naver_config.client_secret:
+                tools.register(NaverSearchTool(
+                    client_id=self.naver_config.client_id,
+                    client_secret=self.naver_config.client_secret,
+                    max_results=self.naver_config.max_results,
+                ))
             
             # Build messages with subagent-specific prompt
             system_prompt = self._build_subagent_prompt(task)

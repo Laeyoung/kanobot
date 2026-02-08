@@ -90,6 +90,101 @@ class WebSearchTool(Tool):
             return f"Error: {e}"
 
 
+class NaverSearchTool(Tool):
+    """Search Naver, optimized for Korean content."""
+
+    name = "naver_search"
+    description = (
+        "Search Naver (Korean search engine). Best for Korean-language queries. "
+        "Supports web, blog, news, and encyclopedia search types."
+    )
+    parameters = {
+        "type": "object",
+        "properties": {
+            "query": {"type": "string", "description": "Search query (Korean recommended)"},
+            "type": {
+                "type": "string",
+                "enum": ["web", "blog", "news", "encyc"],
+                "description": "Search type: web (default), blog, news, or encyc (encyclopedia)",
+            },
+            "count": {
+                "type": "integer",
+                "description": "Number of results (1-10)",
+                "minimum": 1,
+                "maximum": 10,
+            },
+            "sort": {
+                "type": "string",
+                "enum": ["sim", "date"],
+                "description": "Sort order: sim (relevance, default) or date (newest first)",
+            },
+        },
+        "required": ["query"],
+    }
+
+    _ENDPOINTS = {
+        "web": "https://openapi.naver.com/v1/search/webkr.json",
+        "blog": "https://openapi.naver.com/v1/search/blog.json",
+        "news": "https://openapi.naver.com/v1/search/news.json",
+        "encyc": "https://openapi.naver.com/v1/search/encyc.json",
+    }
+
+    def __init__(self, client_id: str = "", client_secret: str = "", max_results: int = 5):
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.max_results = max_results
+
+    async def execute(
+        self,
+        query: str,
+        type: str = "web",
+        count: int | None = None,
+        sort: str = "sim",
+        **kwargs: Any,
+    ) -> str:
+        if not self.client_id or not self.client_secret:
+            return "Error: Naver API credentials not configured (client_id / client_secret)"
+
+        endpoint = self._ENDPOINTS.get(type)
+        if not endpoint:
+            return f"Error: Invalid search type '{type}'. Use: web, blog, news, encyc"
+
+        n = min(max(count or self.max_results, 1), 10)
+
+        try:
+            async with httpx.AsyncClient() as client:
+                r = await client.get(
+                    endpoint,
+                    params={"query": query, "display": n, "sort": sort},
+                    headers={
+                        "X-Naver-Client-Id": self.client_id,
+                        "X-Naver-Client-Secret": self.client_secret,
+                    },
+                    timeout=10.0,
+                )
+                if r.status_code == 429:
+                    return "Error: Naver API rate limit exceeded. Please try again later."
+                r.raise_for_status()
+
+            items = r.json().get("items", [])
+            if not items:
+                return f"No results for: {query}"
+
+            lines = [f"Results for: {query}\n"]
+            for i, item in enumerate(items[:n], 1):
+                title = _strip_tags(item.get("title", ""))
+                link = item.get("link", "")
+                desc = _strip_tags(item.get("description", ""))
+                lines.append(f"{i}. {title}\n   {link}")
+                if desc:
+                    lines.append(f"   {desc}")
+            return "\n".join(lines)
+        except httpx.HTTPStatusError as e:
+            return f"Error: Naver API returned status {e.response.status_code}"
+        except Exception as e:
+            return f"Error: {e}"
+
+
 class WebFetchTool(Tool):
     """Fetch and extract content from a URL using Readability."""
     

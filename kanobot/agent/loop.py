@@ -14,7 +14,7 @@ from kanobot.agent.context import ContextBuilder
 from kanobot.agent.tools.registry import ToolRegistry
 from kanobot.agent.tools.filesystem import ReadFileTool, WriteFileTool, EditFileTool, ListDirTool
 from kanobot.agent.tools.shell import ExecTool
-from kanobot.agent.tools.web import WebSearchTool, WebFetchTool
+from kanobot.agent.tools.web import WebSearchTool, NaverSearchTool, WebFetchTool
 from kanobot.agent.tools.message import MessageTool
 from kanobot.agent.tools.spawn import SpawnTool
 from kanobot.agent.subagent import SubagentManager
@@ -42,8 +42,9 @@ class AgentLoop:
         max_iterations: int = 20,
         brave_api_key: str | None = None,
         exec_config: "ExecToolConfig | None" = None,
+        naver_config: "NaverSearchConfig | None" = None,
     ):
-        from kanobot.config.schema import ExecToolConfig
+        from kanobot.config.schema import ExecToolConfig, NaverSearchConfig
         self.bus = bus
         self.provider = provider
         self.workspace = workspace
@@ -51,6 +52,7 @@ class AgentLoop:
         self.max_iterations = max_iterations
         self.brave_api_key = brave_api_key
         self.exec_config = exec_config or ExecToolConfig()
+        self.naver_config = naver_config or NaverSearchConfig()
         
         self.context = ContextBuilder(workspace)
         self.sessions = SessionManager(workspace)
@@ -62,6 +64,7 @@ class AgentLoop:
             model=self.model,
             brave_api_key=brave_api_key,
             exec_config=self.exec_config,
+            naver_config=self.naver_config,
         )
         
         self._running = False
@@ -85,6 +88,12 @@ class AgentLoop:
         # Web tools
         self.tools.register(WebSearchTool(api_key=self.brave_api_key))
         self.tools.register(WebFetchTool())
+        if self.naver_config.client_id and self.naver_config.client_secret:
+            self.tools.register(NaverSearchTool(
+                client_id=self.naver_config.client_id,
+                client_secret=self.naver_config.client_secret,
+                max_results=self.naver_config.max_results,
+            ))
         
         # Message tool
         message_tool = MessageTool(send_callback=self.bus.publish_outbound)

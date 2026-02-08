@@ -68,9 +68,17 @@ class WebSearchConfig(BaseModel):
     max_results: int = 5
 
 
+class NaverSearchConfig(BaseModel):
+    """Naver Search API configuration."""
+    client_id: str = ""
+    client_secret: str = ""
+    max_results: int = 5
+
+
 class WebToolsConfig(BaseModel):
     """Web tools configuration."""
     search: WebSearchConfig = Field(default_factory=WebSearchConfig)
+    naver: NaverSearchConfig = Field(default_factory=NaverSearchConfig)
 
 
 class ExecToolConfig(BaseModel):

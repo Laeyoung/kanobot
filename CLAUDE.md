@@ -74,3 +74,34 @@ The `spawn` tool creates background `asyncio` tasks that run a separate agent lo
 - **Tools return error strings** instead of raising exceptions, so the agent LLM can see and react to errors.
 - **Skills** are markdown files (`SKILL.md`) with YAML frontmatter for metadata (name, description, requirements).
 - **Bridge** (`bridge/`): Separate Node.js/TypeScript project for WhatsApp. Has its own `package.json` and `tsconfig.json`. Gets force-included into the wheel at `kanobot/bridge`.
+
+## Development Guidelines
+
+코드 변경 시 아래 원칙을 따른다. 사소한 작업에는 판단에 따라 유연하게 적용.
+
+### Think Before Coding
+- 가정을 명시적으로 밝힌다. 불확실하면 먼저 질문한다.
+- 해석이 여러 가지일 때, 조용히 하나를 고르지 말고 선택지를 제시한다.
+- 더 단순한 접근이 있으면 말한다. 필요하면 반론을 제기한다.
+
+### Simplicity First
+- 요청된 것 이상의 기능, 추상화, 유연성을 추가하지 않는다.
+- 일어날 수 없는 시나리오에 대한 에러 핸들링을 넣지 않는다.
+- 200줄을 50줄로 줄일 수 있다면 다시 작성한다.
+
+### Surgical Changes
+- 인접 코드의 개선, 주석 수정, 포맷 변경을 하지 않는다.
+- 기존 스타일이 다르더라도 그 스타일에 맞춘다.
+- 내 변경으로 인해 생긴 미사용 import/변수/함수만 제거한다. 기존 dead code는 언급만 하고 삭제하지 않는다.
+- 모든 변경 라인은 사용자 요청에 직접 연결되어야 한다.
+
+### Goal-Driven Execution
+- 작업을 검증 가능한 목표로 변환한다:
+  - "검증 추가" → 잘못된 입력 테스트 작성 후 통과시키기
+  - "버그 수정" → 재현 테스트 작성 후 통과시키기
+  - "리팩터링" → 전후 테스트 통과 확인
+- 다단계 작업은 간략한 계획을 먼저 세운다:
+  ```
+  1. [단계] → 확인: [검증 방법]
+  2. [단계] → 확인: [검증 방법]
+  ```

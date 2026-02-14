@@ -12,12 +12,32 @@ from kanobot.agent.skills import SkillsLoader
 class ContextBuilder:
     """
     Builds the context (system prompt + messages) for the agent.
-    
+
     Assembles bootstrap files, memory, skills, and conversation history
     into a coherent prompt for the LLM.
     """
-    
+
     BOOTSTRAP_FILES = ["AGENTS.md", "SOUL.md", "USER.md", "TOOLS.md", "IDENTITY.md"]
+
+    JAM_REASON_PROMPT = (
+        "너는 사용자의 고민을 깊이 분석하는 전문가야.\n"
+        "질문에 대해 다음을 300~500자로 분석해:\n"
+        "1. 핵심 고려사항 3~5개\n"
+        "2. 왜 이 결정을 추천하는지\n"
+        "3. 반대 의견도 인정하되, 추천 이유가 더 강한 이유\n"
+        "4. 친근한 톤 유지"
+    )
+
+    JAM_ANSWER_PROMPT = (
+        "너는 JustAnswerMe의 AI 결정 도우미야.\n"
+        "유저의 고민에 대해:\n"
+        "1. 반드시 한 쪽을 선택해서 단답으로 답해\n"
+        '2. "양쪽 다 장단점이..." 같은 양시론 절대 금지\n'
+        "3. 친한 형/누나 톤으로 (반말)\n"
+        "4. 답변은 10자 이내\n"
+        "5. 이모지 1개 포함\n"
+        "6. 자연스러운 한국어 (번역체 금지)"
+    )
     
     def __init__(self, workspace: Path):
         self.workspace = workspace
@@ -112,6 +132,22 @@ When remembering something, write to {workspace_path}/memory/MEMORY.md"""
         
         return "\n\n".join(parts) if parts else ""
     
+    def build_jam_reason_messages(self, question: str) -> list[dict[str, Any]]:
+        """Build messages for JAM reasoning step (no history, no tools)."""
+        return [
+            {"role": "system", "content": self.JAM_REASON_PROMPT},
+            {"role": "user", "content": question},
+        ]
+
+    def build_jam_answer_messages(
+        self, question: str, reasoning: str
+    ) -> list[dict[str, Any]]:
+        """Build messages for JAM answer step (no history, no tools)."""
+        return [
+            {"role": "system", "content": self.JAM_ANSWER_PROMPT},
+            {"role": "user", "content": f"질문: {question}\n분석: {reasoning}"},
+        ]
+
     def build_messages(
         self,
         history: list[dict[str, Any]],

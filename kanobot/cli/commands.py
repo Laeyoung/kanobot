@@ -282,6 +282,7 @@ def gateway(
 def agent(
     message: str = typer.Option(None, "--message", "-m", help="Message to send to the agent"),
     session_id: str = typer.Option("cli:default", "--session", "-s", help="Session ID"),
+    jam: bool = typer.Option(False, "--jam", help="JustAnswerMe mode: 깊이 생각하고 짧게 답한다"),
 ):
     """Interact with the agent directly."""
     from kanobot.config.loader import load_config
@@ -316,30 +317,37 @@ def agent(
         naver_config=config.tools.web.naver,
     )
     
+    meta = {"mode": "jam"} if jam else None
+
     if message:
         # Single message mode
         async def run_once():
-            response = await agent_loop.process_direct(message, session_id)
+            response = await agent_loop.process_direct(message, session_id, metadata=meta)
             console.print(f"\n{__logo__} {response}")
-        
+
         asyncio.run(run_once())
     else:
         # Interactive mode
-        console.print(f"{__logo__} Interactive mode (Ctrl+C to exit)\n")
-        
+        label = f"{__logo__} Interactive mode"
+        if jam:
+            label += " [JAM]"
+        console.print(f"{label} (Ctrl+C to exit)\n")
+
         async def run_interactive():
             while True:
                 try:
                     user_input = console.input("[bold blue]You:[/bold blue] ")
                     if not user_input.strip():
                         continue
-                    
-                    response = await agent_loop.process_direct(user_input, session_id)
+
+                    response = await agent_loop.process_direct(
+                        user_input, session_id, metadata=meta
+                    )
                     console.print(f"\n{__logo__} {response}\n")
                 except KeyboardInterrupt:
                     console.print("\nGoodbye!")
                     break
-        
+
         asyncio.run(run_interactive())
 
 

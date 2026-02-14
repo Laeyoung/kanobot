@@ -309,11 +309,45 @@ Config file: `~/.kanobot/config.json`
 |---------|-------------|
 | `kanobot onboard` | Initialize config & workspace |
 | `kanobot agent -m "..."` | Chat with the agent |
+| `kanobot agent -m "..." --jam` | JustAnswerMe mode (think deep, answer short) |
 | `kanobot agent` | Interactive chat mode |
 | `kanobot gateway` | Start the gateway |
 | `kanobot status` | Show status |
 | `kanobot channels login` | Link WhatsApp (scan QR) |
 | `kanobot channels status` | Show channel status |
+
+<details>
+<summary><b>JustAnswerMe Mode</b></summary>
+
+JustAnswerMe (JAM) mode makes kanobot think deeply about your question, then give you a short, decisive one-line answer — no wishy-washy "both sides have merits" responses.
+
+**How it works**: Two-step LLM call — (1) deep reasoning analysis, (2) short decisive answer. Only the short answer is returned.
+
+**CLI**
+
+```bash
+# Single message
+kanobot agent -m "Should I eat chicken or pizza?" --jam
+
+# Interactive mode (all messages use JAM)
+kanobot agent --jam
+```
+
+**Chat channels (Telegram, Discord, Slack, WhatsApp)**
+
+```
+# Prefix with !jam or /jam
+!jam Should I quit my job?
+/jam Should I lend money to a friend?
+```
+
+Telegram also supports the native `/jam` command:
+
+```
+/jam Should I adopt a cat?
+```
+
+</details>
 
 <details>
 <summary><b>Scheduled Tasks (Cron)</b></summary>

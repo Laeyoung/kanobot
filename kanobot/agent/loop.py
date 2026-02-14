@@ -152,8 +152,12 @@ class AgentLoop:
         if msg.channel == "system":
             return await self._process_system_message(msg)
         
+        # JAM mode: 2-step reasoning → short answer
+        if msg.metadata.get("mode") == "jam":
+            return await self._process_jam(msg)
+
         logger.info(f"Processing message from {msg.channel}:{msg.sender_id}")
-        
+
         # Get or create session
         session = self.sessions.get_or_create(msg.session_key)
         
@@ -232,6 +236,35 @@ class AgentLoop:
             content=final_content
         )
     
+    async def _process_jam(self, msg: InboundMessage) -> OutboundMessage:
+        """JustAnswerMe 2-step processing: reason deeply, then answer short."""
+        logger.info(f"JAM mode for {msg.channel}:{msg.sender_id}")
+        question = msg.content
+
+        # Step 1: Deep reasoning
+        reason_messages = self.context.build_jam_reason_messages(question)
+        reason_response = await self.provider.chat(
+            messages=reason_messages, tools=None, model=self.model
+        )
+        reasoning = reason_response.content or ""
+
+        # Step 2: Short decisive answer
+        answer_messages = self.context.build_jam_answer_messages(question, reasoning)
+        answer_response = await self.provider.chat(
+            messages=answer_messages, tools=None, model=self.model
+        )
+        answer = answer_response.content or ""
+
+        # Save to session
+        session = self.sessions.get_or_create(msg.session_key)
+        session.add_message("user", question)
+        session.add_message("assistant", answer)
+        self.sessions.save(session)
+
+        return OutboundMessage(
+            channel=msg.channel, chat_id=msg.chat_id, content=answer
+        )
+
     async def _process_system_message(self, msg: InboundMessage) -> OutboundMessage | None:
         """
         Process a system message (e.g., subagent announce).
@@ -324,14 +357,20 @@ class AgentLoop:
             content=final_content
         )
     
-    async def process_direct(self, content: str, session_key: str = "cli:direct") -> str:
+    async def process_direct(
+        self,
+        content: str,
+        session_key: str = "cli:direct",
+        metadata: dict[str, Any] | None = None,
+    ) -> str:
         """
         Process a message directly (for CLI usage).
-        
+
         Args:
             content: The message content.
             session_key: Session identifier.
-        
+            metadata: Optional metadata (e.g. {"mode": "jam"}).
+
         Returns:
             The agent's response.
         """
@@ -339,8 +378,9 @@ class AgentLoop:
             channel="cli",
             sender_id="user",
             chat_id="direct",
-            content=content
+            content=content,
+            metadata=metadata or {},
         )
-        
+
         response = await self._process_message(msg)
         return response.content if response else ""

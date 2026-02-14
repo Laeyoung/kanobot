@@ -116,9 +116,10 @@ class TelegramChannel(BaseChannel):
             )
         )
         
-        # Add /start command handler
+        # Add command handlers
         from telegram.ext import CommandHandler
         self._app.add_handler(CommandHandler("start", self._on_start))
+        self._app.add_handler(CommandHandler("jam", self._on_jam))
         
         logger.info("Starting Telegram bot (polling mode)...")
         
@@ -191,6 +192,28 @@ class TelegramChannel(BaseChannel):
             "Send me a message and I'll respond!"
         )
     
+    async def _on_jam(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        """Handle /jam command for JustAnswerMe mode."""
+        if not update.message or not update.effective_user:
+            return
+
+        text = (update.message.text or "").removeprefix("/jam").strip()
+        if not text:
+            await update.message.reply_text("사용법: /jam 치킨 먹을까? 피자 먹을까?")
+            return
+
+        user = update.effective_user
+        sender_id = str(user.id)
+        if user.username:
+            sender_id = f"{sender_id}|{user.username}"
+
+        await self._handle_message(
+            sender_id=sender_id,
+            chat_id=str(update.message.chat_id),
+            content=text,
+            metadata={"mode": "jam"},
+        )
+
     async def _on_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         """Handle incoming messages (text, photos, voice, documents)."""
         if not update.message or not update.effective_user:

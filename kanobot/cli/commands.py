@@ -381,6 +381,23 @@ def channels_status():
         tg_config
     )
 
+    # Discord
+    dc = config.channels.discord
+    dc_config = f"token: {dc.token[:10]}..." if dc.token else "[dim]not configured[/dim]"
+    table.add_row(
+        "Discord",
+        "✓" if dc.enabled else "✗",
+        dc_config
+    )
+
+    # Slack
+    sl = config.channels.slack
+    sl_config = (
+        f"bot: {sl.bot_token[:10]}..."
+        if sl.bot_token else "[dim]not configured[/dim]"
+    )
+    table.add_row("Slack", "✓" if sl.enabled else "✗", sl_config)
+
     console.print(table)
 
 

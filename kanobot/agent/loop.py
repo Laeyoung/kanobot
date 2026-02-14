@@ -248,12 +248,16 @@ class AgentLoop:
         )
         reasoning = reason_response.content or ""
 
-        # Step 2: Short decisive answer
-        answer_messages = self.context.build_jam_answer_messages(question, reasoning)
-        answer_response = await self.provider.chat(
-            messages=answer_messages, tools=None, model=self.model
-        )
-        answer = answer_response.content or ""
+        # Step 2: Short decisive answer (fallback to reasoning on failure)
+        try:
+            answer_messages = self.context.build_jam_answer_messages(question, reasoning)
+            answer_response = await self.provider.chat(
+                messages=answer_messages, tools=None, model=self.model
+            )
+            answer = answer_response.content or ""
+        except Exception as e:
+            logger.warning(f"JAM answer step failed, returning reasoning: {e}")
+            answer = reasoning
 
         # Save to session
         session = self.sessions.get_or_create(msg.session_key)

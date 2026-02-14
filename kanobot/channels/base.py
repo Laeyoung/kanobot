@@ -104,13 +104,16 @@ class BaseChannel(ABC):
         if not self.is_allowed(sender_id):
             return
 
-        # Detect JAM mode prefix (!jam or /jam)
+        # Detect JAM mode prefix (!jam or /jam), case-insensitive
         if metadata is None:
             metadata = {}
+        lower = content.lower()
         for prefix in ("!jam ", "/jam "):
-            if content.startswith(prefix):
-                content = content[len(prefix):]
-                metadata["mode"] = "jam"
+            if lower.startswith(prefix):
+                stripped = content[len(prefix):].strip()
+                if stripped:
+                    content = stripped
+                    metadata["mode"] = "jam"
                 break
 
         msg = InboundMessage(

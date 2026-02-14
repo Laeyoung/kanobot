@@ -30,7 +30,18 @@ Integrated JustAnswerMe into kanobot. JAM mode lets the agent think deeply about
   - Usage: `/jam Should I quit my job?`
 
 - **Tests** (`tests/test_jam_mode.py`)
-  - 9 tests: prompt content, mode detection, prefix detection (`!jam`, `/jam`), 2-step LLM processing (mock provider), and regression test for regular mode.
+  - 32 tests across 7 classes: prompt building, metadata detection, prefix detection, 2-step LLM processing, routing, regression, and Telegram `/jam` command.
+
+### Hardened
+
+- **Case-insensitive prefix** (`kanobot/channels/base.py`)
+  - `!JAM`, `/Jam`, `!jAm` 등 대소문자 변형 모두 JAM 모드로 인식.
+
+- **Empty question guard** (`kanobot/channels/base.py`)
+  - `!jam ` (질문 없이 프리픽스만) 전송 시 JAM 모드 활성화하지 않고 원본 메시지 유지.
+
+- **Answer step error handling** (`kanobot/agent/loop.py`)
+  - 2단계(짧은 답변) LLM 호출 실패 시, 1단계 reasoning 결과를 fallback으로 반환.
 
 ### Files Changed
 
